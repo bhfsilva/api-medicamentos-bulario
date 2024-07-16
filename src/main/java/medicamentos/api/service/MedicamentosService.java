@@ -6,8 +6,7 @@ import medicamentos.api.consumer.BularioAnvisaApiConsumer;
 import medicamentos.api.domain.anvisaApi.AnvisaApiDTO;
 import medicamentos.api.domain.medicamento.Medicamento;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
@@ -19,12 +18,14 @@ public class MedicamentosService {
     @Autowired
     private BularioAnvisaApiConsumer bularioApiConsumer;
 
-    public List<Medicamento> getPageMedicamentos() {
-        String jsonResponse = bularioApiConsumer.getPageMedicamentos();
+    public AnvisaApiDTO<Medicamento> getPageMedicamentos(Pageable pagination) {
+        String jsonResponse = bularioApiConsumer.getPageMedicamentos(pagination);
         Gson gson = new Gson();
-        Type responseType = new TypeToken<PageImpl<Medicamento>>() {}.getType();
-        PageImpl<Medicamento> objectResponse = gson.fromJson(jsonResponse, responseType);
+        Type responseType = new TypeToken<AnvisaApiDTO<Medicamento>>() {}.getType();
+        AnvisaApiDTO<Medicamento> objectResponse = gson.fromJson(jsonResponse, responseType);
 
-        return objectResponse.getContent();
+        objectResponse.setNumber(objectResponse.getNumber() + 1);
+
+        return objectResponse;
     }
 }

@@ -1,8 +1,10 @@
 package medicamentos.api.controller;
 
+import medicamentos.api.domain.anvisaApi.AnvisaApiDTO;
 import medicamentos.api.domain.medicamento.Medicamento;
 import medicamentos.api.service.MedicamentosService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +19,8 @@ public class MedicamentosController {
     private MedicamentosService service;
 
     @GetMapping
-    public List<Medicamento> getMedicamentos() {
-        return service.getPageMedicamentos();
+    public AnvisaApiDTO<Medicamento> getMedicamentos(Pageable pagination) {
+        return service.getPageMedicamentos(pagination);
     }
 
 }
