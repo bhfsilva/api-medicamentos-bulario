@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/medicamentos")
 public class MedicamentosController {
@@ -33,6 +35,8 @@ public class MedicamentosController {
             @PathVariable String numeroProcesso,
             @PageableDefault(size = 10, page = 1) Pageable pagination
     ) {
-        return bularioApiConsumer.getMedicamentoByNumeroProcesso(numeroProcesso, pagination);
+    @GetMapping("/disponiveis/{prefixoNomeMedicamento}")
+    public List<String> getNomeMedicamentos(@PathVariable String prefixoNomeMedicamento) {
+        return anvisaApiConsumer.getNomeMedicamentos(prefixoNomeMedicamento);
     }
 }

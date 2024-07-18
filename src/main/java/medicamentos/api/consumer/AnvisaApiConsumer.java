@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import java.lang.reflect.Type;
+import java.util.List;
 
 @Component
 public class AnvisaApiConsumer {
@@ -39,5 +40,15 @@ public class AnvisaApiConsumer {
         AnvisaApiResponse<MedicamentoCompleto> objectResponse = gson.fromJson(jsonResponse, responseType);
         objectResponse.setNumber(objectResponse.getNumber() + 1);
         return objectResponse;
+    }
+
+    public List<String> getNomeMedicamentos(String prefixoNomeMedicamento) {
+
+        String endpoint = "/produto/listaMedicamentoBula/" + prefixoNomeMedicamento;
+
+        String jsonResponse = anvisaWebClient.get(endpoint, null);
+        Gson gson = new Gson();
+        Type responseType = new TypeToken<List<String>>() {}.getType();
+        return gson.fromJson(jsonResponse, responseType);
     }
 }
