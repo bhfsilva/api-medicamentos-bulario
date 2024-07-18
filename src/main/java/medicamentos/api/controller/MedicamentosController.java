@@ -17,17 +17,18 @@ import java.util.List;
 public class MedicamentosController {
 
     @Autowired
-    private AnvisaApiConsumer bularioApiConsumer;
+    private AnvisaApiConsumer anvisaApiConsumer;
 
     @Autowired
-    private MedicamentosService service;
+    private MedicamentosService medicamentosService;
 
     @GetMapping
-    public AnvisaApiResponse<Medicamento> getMedicamentos(
-            @RequestParam(required = false, defaultValue = "") String nomeMedicamento,
+    @GetMapping("/**")
+    public AnvisaApiResponse<MedicamentoCompleto> getMedicamentoByNumeroProcesso(
+            @RequestParam(required = false, defaultValue = "") String numeroProcesso,
             @PageableDefault(size = 10, page = 1) Pageable pagination
     ) {
-        return bularioApiConsumer.getMedicamentos(nomeMedicamento, pagination);
+        return medicamentosService.getMedicamentoCompleto(numeroProcesso, pagination);
     }
 
     @GetMapping("/{numeroProcesso}")
