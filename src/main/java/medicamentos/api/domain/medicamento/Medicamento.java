@@ -29,6 +29,4 @@ public class Medicamento{
 
     @SerializedName("idBulaProfissionalProtegido")
     String idBulaProfissional;
-
-    List<LinkMedicamento> links;
 }

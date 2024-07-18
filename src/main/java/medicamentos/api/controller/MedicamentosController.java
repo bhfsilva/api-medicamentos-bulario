@@ -23,6 +23,10 @@ public class MedicamentosController {
     private MedicamentosService medicamentosService;
 
     @GetMapping
+    public AnvisaApiResponse<Medicamento> getMedicamentos(@PageableDefault(size = 10, page = 1) Pageable pagination) {
+        return anvisaApiConsumer.getMedicamentos("", pagination);
+    }
+
     @GetMapping("/**")
     public AnvisaApiResponse<MedicamentoCompleto> getMedicamentoByNumeroProcesso(
             @RequestParam(required = false, defaultValue = "") String numeroProcesso,
@@ -31,11 +35,14 @@ public class MedicamentosController {
         return medicamentosService.getMedicamentoCompleto(numeroProcesso, pagination);
     }
 
-    @GetMapping("/{numeroProcesso}")
-    public AnvisaApiResponse<MedicamentoCompleto> getMedicamentoByNumeroProcesso(
-            @PathVariable String numeroProcesso,
+    @GetMapping("/{nomeMedicamento}")
+    public Object getMedicamentoByNome(
+            @PathVariable String nomeMedicamento,
             @PageableDefault(size = 10, page = 1) Pageable pagination
     ) {
+        return anvisaApiConsumer.getMedicamentos(nomeMedicamento, pagination);
+    }
+
     @GetMapping("/disponiveis/{prefixoNomeMedicamento}")
     public List<String> getNomeMedicamentos(@PathVariable String prefixoNomeMedicamento) {
         return anvisaApiConsumer.getNomeMedicamentos(prefixoNomeMedicamento);
