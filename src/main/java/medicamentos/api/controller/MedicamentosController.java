@@ -1,32 +1,50 @@
 package medicamentos.api.controller;
 
-import medicamentos.api.consumer.bulario.BularioAnvisaApiConsumer;
-import medicamentos.api.domain.anvisaApi.AnvisaApiDTO;
+import medicamentos.api.consumer.AnvisaApiConsumer;
+import medicamentos.api.domain.anvisaApiResponse.AnvisaApiResponse;
 import medicamentos.api.domain.medicamento.Medicamento;
+import medicamentos.api.domain.medicamentoCompleto.MedicamentoCompleto;
 import medicamentos.api.service.MedicamentosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/medicamentos")
 public class MedicamentosController {
 
     @Autowired
-    private BularioAnvisaApiConsumer bularioApiConsumer;
+    private AnvisaApiConsumer anvisaApiConsumer;
 
     @Autowired
-    private MedicamentosService service;
+    private MedicamentosService medicamentosService;
 
     @GetMapping
-    public AnvisaApiDTO<Medicamento> getMedicamentos(
-            @RequestParam(required = false, defaultValue = "") String nomeMedicamento,
+    public AnvisaApiResponse<Medicamento> getMedicamentos(@PageableDefault(size = 10, page = 1) Pageable pagination) {
+        return anvisaApiConsumer.getMedicamentos("", pagination);
+    }
+
+    @GetMapping("/**")
+    public AnvisaApiResponse<MedicamentoCompleto> getMedicamentoByNumeroProcesso(
+            @RequestParam(required = false, defaultValue = "") String numeroProcesso,
             @PageableDefault(size = 10, page = 1) Pageable pagination
     ) {
-        return bularioApiConsumer.getMedicamentos(nomeMedicamento, pagination);
+        return medicamentosService.getMedicamentoCompleto(numeroProcesso, pagination);
+    }
+
+    @GetMapping("/{nomeMedicamento}")
+    public Object getMedicamentoByNome(
+            @PathVariable String nomeMedicamento,
+            @PageableDefault(size = 10, page = 1) Pageable pagination
+    ) {
+        return anvisaApiConsumer.getMedicamentos(nomeMedicamento, pagination);
+    }
+
+    @GetMapping("/disponiveis/{prefixoNomeMedicamento}")
+    public List<String> getNomeMedicamentos(@PathVariable String prefixoNomeMedicamento) {
+        return anvisaApiConsumer.getNomeMedicamentos(prefixoNomeMedicamento);
     }
 }

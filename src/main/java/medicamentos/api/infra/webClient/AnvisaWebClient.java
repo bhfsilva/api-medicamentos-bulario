@@ -1,4 +1,4 @@
-package medicamentos.api.infra;
+package medicamentos.api.infra.webClient;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -29,15 +29,19 @@ public class AnvisaWebClient {
 
     public String get(String resource, Pageable pagination) {
 
-        Integer numPage = pagination.getPageNumber() != 0 ? pagination.getPageNumber() : 1;
-        Integer contentSize = pagination.getPageSize();
+        String endpoint = resource;
 
-        String paginationParams = UriComponentsBuilder.newInstance()
-                .queryParam("page", numPage)
-                .queryParam("size", contentSize)
-                .build().toUriString();
+        if (pagination != null) {
+            Integer numPage = pagination.getPageNumber() != 0 ? pagination.getPageNumber() : 1;
+            Integer contentSize = pagination.getPageSize();
 
-        String endpoint = resource + paginationParams.replace("?", "&");;
+            String paginationParams = UriComponentsBuilder.newInstance()
+                    .queryParam("page", numPage)
+                    .queryParam("size", contentSize)
+                    .build().toUriString();
+
+            endpoint += paginationParams.replace("?", "&");;
+        }
         Mono<String> monoPageAnvisaApi = this.anvisaConsumerClient().method(HttpMethod.GET)
                 .uri(endpoint)
                 .retrieve()

@@ -1,4 +1,4 @@
-package medicamentos.api.domain.anvisaApi;
+package medicamentos.api.domain.anvisaApiResponse;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class AnvisaApiDTO<T> {
+public class AnvisaApiResponse<T> {
     List<T> content;
     Integer totalElements;
     Integer totalPages;
