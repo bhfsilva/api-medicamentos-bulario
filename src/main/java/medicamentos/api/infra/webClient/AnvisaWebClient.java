@@ -19,7 +19,7 @@ public class AnvisaWebClient {
         headers.add(HttpHeaders.REFERER, ANVISA_WEBSITE);
     }
 
-    public WebClient anvisaConsumerClient() {
+        private WebClient anvisaConsumerClient() {
         return WebClient
                 .builder()
                 .baseUrl(ANVISA_WEBSITE + "/api")

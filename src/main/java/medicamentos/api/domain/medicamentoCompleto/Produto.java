@@ -9,6 +9,8 @@ import medicamentos.api.domain.categoria.Categoria;
 @Setter
 public class Produto {
 
+    String fotoMedicamentoBase64;
+
     @SerializedName("codigo")
     String idMedicamento;
 
@@ -28,8 +30,4 @@ public class Produto {
 
     @SerializedName("situacaoApresentacao")
     String situacao;
-
-    String idBulaPaciente;
-
-    String idBulaProfissional;
 }
