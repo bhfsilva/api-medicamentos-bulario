@@ -26,7 +26,4 @@ public class Medicamento{
 
     @SerializedName("idBulaPacienteProtegido")
     String idBulaPaciente;
-
-    @SerializedName("idBulaProfissionalProtegido")
-    String idBulaProfissional;
 }

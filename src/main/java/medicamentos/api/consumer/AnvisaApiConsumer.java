@@ -3,7 +3,7 @@ package medicamentos.api.consumer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import medicamentos.api.domain.medicamentoCompleto.MedicamentoCompleto;
-import medicamentos.api.infra.webClient.AnvisaWebClient;
+import medicamentos.api.infra.AnvisaWebClient;
 import medicamentos.api.domain.anvisaApiResponse.AnvisaApiResponse;
 import medicamentos.api.domain.medicamento.Medicamento;
 import org.springframework.beans.factory.annotation.Autowired;
