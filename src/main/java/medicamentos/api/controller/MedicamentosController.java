@@ -36,7 +36,7 @@ public class MedicamentosController {
     }
 
     @GetMapping("/{nomeMedicamento}")
-    public Object getMedicamentoByNome(
+    public AnvisaApiResponse<Medicamento> getMedicamentoByNome(
             @PathVariable String nomeMedicamento,
             @PageableDefault(size = 10, page = 1) Pageable pagination
     ) {
@@ -44,7 +44,7 @@ public class MedicamentosController {
     }
 
     @GetMapping("/disponiveis/{prefixoNomeMedicamento}")
-    public List<String> getNomeMedicamentos(@PathVariable String prefixoNomeMedicamento) {
+    public List<String> getNomeMedicamentosDisponiveis(@PathVariable String prefixoNomeMedicamento) {
         return anvisaApiConsumer.getNomeMedicamentos(prefixoNomeMedicamento);
     }
 }
