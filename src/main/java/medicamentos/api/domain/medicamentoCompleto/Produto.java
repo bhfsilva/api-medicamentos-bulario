@@ -30,4 +30,8 @@ public class Produto {
 
     @SerializedName("situacaoApresentacao")
     String situacao;
+
+    String idBulaPaciente;
+
+    String numeroProcesso;
 }
