@@ -8,6 +8,7 @@ import medicamentos.api.service.MedicamentosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,11 @@ public class MedicamentosController {
             @RequestParam(required = false, defaultValue = "") String numeroProcesso,
             @PageableDefault(size = 10, page = 1) Pageable pagination
     ) {
-        return ResponseEntity.ok(medicamentosService.getMedicamentoCompleto(numeroProcesso, pagination));
+        AnvisaApiResponse<MedicamentoCompleto> response = medicamentosService.getMedicamentoCompleto(numeroProcesso, pagination);
+        if (response.getContent().get(0).getMedicamento().getFotoMedicamentoBase64().isBlank()) {
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(response);
+        }
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{nomeMedicamento}/")
