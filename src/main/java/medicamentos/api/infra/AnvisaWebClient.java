@@ -1,4 +1,4 @@
-package medicamentos.api.infra.webClient;
+package medicamentos.api.infra;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;

@@ -3,7 +3,8 @@ package medicamentos.api.consumer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import medicamentos.api.domain.medicamentoCompleto.MedicamentoCompleto;
-import medicamentos.api.infra.webClient.AnvisaWebClient;
+import medicamentos.api.domain.medicamentoCompleto.Produto;
+import medicamentos.api.infra.AnvisaWebClient;
 import medicamentos.api.domain.anvisaApiResponse.AnvisaApiResponse;
 import medicamentos.api.domain.medicamento.Medicamento;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,15 @@ public class AnvisaApiConsumer {
         Type responseType = new TypeToken<AnvisaApiResponse<MedicamentoCompleto>>() {}.getType();
         AnvisaApiResponse<MedicamentoCompleto> objectResponse = gson.fromJson(jsonResponse, responseType);
         objectResponse.setNumber(objectResponse.getNumber() + 1);
+
+        Produto medicamentoCompleto = objectResponse.getContent().get(0).getMedicamento();
+        endpoint = "/consulta/bulario/?filter[numeroRegistro]=" + medicamentoCompleto.getNumeroRegistro();
+        jsonResponse = anvisaWebClient.get(endpoint, pagination);
+        responseType = new TypeToken<AnvisaApiResponse<Medicamento>>() {}.getType();
+        AnvisaApiResponse<Medicamento> responseMedicamentoSimples = gson.fromJson(jsonResponse, responseType);
+        String bulaMedicamentoSimples = responseMedicamentoSimples.getContent().get(0).getIdBulaPaciente();
+        objectResponse.getContent().get(0).getMedicamento().setIdBulaPaciente(bulaMedicamentoSimples);
+        objectResponse.getContent().get(0).getMedicamento().setNumeroProcesso(numeroProcesso);
         return objectResponse;
     }
 
