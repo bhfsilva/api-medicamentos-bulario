@@ -1,5 +1,10 @@
 # API Medicamentos Bulário
 
+![Java](https://img.shields.io/badge/java%2019-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring](https://img.shields.io/badge/springboot-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
+
 <div align="center">
   
   ![api-med](https://github.com/user-attachments/assets/9252f686-0638-4df3-88d8-ca090516578d)
@@ -69,7 +74,7 @@ classDiagram
 `*/?page=<NUMERO DA PAGINA>` - Configura o número da página que será retornada na consulta;<br>
 
 > [!TIP]
-> Por se tratar de uma API de consultas todos endpoints aceitam apenas métodos HTTP GET.
+> Por se tratar de uma API para consultas todos endpoints aceitam apenas métodos HTTP GET.
 
 ## Exemplo de retorno
 ### Medicamento simples
@@ -108,3 +113,9 @@ classDiagram
   }
 }
 ```
+
+## 👥 Colaboradores
+* Bruno Henrique.
+
+## 🛎 Considerações
+* Caso encontre <strong>bugs</strong> ou tenha <strong>sugestões</strong>, abra uma issue ou entre em contato.
