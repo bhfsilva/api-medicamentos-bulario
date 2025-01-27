@@ -1,4 +1,20 @@
 from fastapi import FastAPI, status
+from fastapi.responses import RedirectResponse
+from src.models.http_responses import OkResponse, InternalServerErrorResponse
+
+responses_models = {
+  status.HTTP_200_OK: {
+    "model": OkResponse,
+    "description": "Ok Response"
+  },
+  status.HTTP_500_INTERNAL_SERVER_ERROR: {
+    "model": InternalServerErrorResponse,
+    "description": "Internal Server Error"
+  },
+  status.HTTP_422_UNPROCESSABLE_ENTITY: {
+    "model": None
+  }
+}
 
 app = FastAPI(
   title="API Medicamentos Bulário",
@@ -14,12 +30,20 @@ app = FastAPI(
   redoc_url=None
 )
 
+@app.get("/", include_in_schema=False)
+def redirect_root():
+  return RedirectResponse(url="/medicines/")
+
 # custom get decorator
-def get(path: str):
+def get(path: str, description: str, swagger_url_id: str):
   def decorator(func):
     return app.get(
       path,
       tags=["medicines"],
-      status_code=status.HTTP_200_OK
-      )(func)
+      description=description,
+      status_code=status.HTTP_200_OK,
+      operation_id=swagger_url_id,
+      responses=responses_models
+    )(func)
   return decorator
+ 
