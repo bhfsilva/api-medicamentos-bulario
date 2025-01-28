@@ -6,9 +6,9 @@ def get_webdriver():
   try:
     chrome_options = Options() 
     chrome_options.add_argument('--headless=new')
-    chrome_options.binary_location='/opt/chrome/chrome-linux64/chrome'
+    chrome_options.binary_location='/opt/chrome-linux64/chrome'
     driver = webdriver.Chrome(
-      service=Service('/opt/chromedriver-linux64/chromedriver'),
+      service=Service(executable_path='/opt/chromedriver-linux64/chromedriver'),
       options=chrome_options
     )
     return driver

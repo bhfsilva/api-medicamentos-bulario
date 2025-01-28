@@ -17,7 +17,4 @@ class ScraperService():
     except Exception as e:
       raise Exception(e)
 
-    finally:
-      driver.quit()
-
     return base

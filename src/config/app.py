@@ -1,6 +1,6 @@
 from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse
-from src.models.http_responses import OkResponse, InternalServerErrorResponse
+from src.models.http_responses import OkResponse, InternalServerErrorResponse, PartialContentResponse
 
 responses_models = {
   status.HTTP_200_OK: {
@@ -10,6 +10,10 @@ responses_models = {
   status.HTTP_500_INTERNAL_SERVER_ERROR: {
     "model": InternalServerErrorResponse,
     "description": "Internal Server Error"
+  },
+  status.HTTP_206_PARTIAL_CONTENT: {
+    "model": PartialContentResponse,
+    "description": "Partial Content"
   },
   status.HTTP_422_UNPROCESSABLE_ENTITY: {
     "model": None

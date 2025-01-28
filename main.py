@@ -1,10 +1,11 @@
-from typing import Union
+from typing import Union, List
 from src.config.app import app, get
+from src.models.pagination import Pagination
 from src.config.webdriver import get_webdriver
 from src.services.scraper import ScraperService
-from src.models.http_responses import OkResponse, NoContentResponse, InternalServerErrorResponse
-from src.models.pagination import Pagination
 from src.services.http_client import HttpService
+from src.models.medicine import DetailedMedicine, Medicine
+from src.models.http_responses import OkResponse, NoContentResponse, InternalServerErrorResponse
 
 http_headers = {
   'Authorization': 'Guest',
@@ -13,8 +14,6 @@ http_headers = {
 }
 
 http_client = HttpService(headers=http_headers)
-
-driver = get_webdriver()
 
 @get(path="/medicines/",
     description="""
@@ -31,7 +30,7 @@ async def get_medicines(search: Union[str, None] = None):
       response = http_client.get(f"{endpoint}{search}")
 
     if not response["content"]:
-      return NoContentResponse(content=[])
+      return NoContentResponse(content=[], pagination=None)
 
     return OkResponse(
       content=response["content"],
@@ -45,7 +44,7 @@ async def get_medicines(search: Union[str, None] = None):
     )
     
   except Exception as e:
-    return InternalServerErrorResponse(content={"error": f"{str(e)}"})
+    return InternalServerErrorResponse(content={"Error": f"{str(e)}"}, pagination=None)
 
 @get(path="/medicines/{process_number}/",
     description="""
@@ -54,25 +53,39 @@ async def get_medicines(search: Union[str, None] = None):
     """,
     swagger_url_id="getMedicineByProcessNumber")
 async def get_medicine_by_process_number(process_number: str, index: str = "1"):
+  driver = get_webdriver()
+  scraper = ScraperService(webdriver=driver)
+
   try:
-    response = http_client.get(f"https://consultas.anvisa.gov.br/api/consulta/medicamento/produtos/?filter[numeroProcesso]={process_number}")
+    detailed_response = http_client.get(f"https://consultas.anvisa.gov.br/api/consulta/medicamento/produtos/?filter[numeroProcesso]={process_number}")
 
-    if not response["content"]:
-      return NoContentResponse(content=[])
+    if not detailed_response["content"]:
+      return NoContentResponse(content=[], pagination=None)
+    
+    medicine = detailed_response["content"][0]
+    medicine_register_number = medicine["produto"]["numeroRegistro"]
 
-    return OkResponse(
-      content=response["content"],
-      pagination=Pagination(
-        totalElements=response["totalElements"],
-        totalPages=response["totalPages"],
-        last=response["last"],
-        number=response["number"],
-        first=response["first"]
-      )
-    )
+    # get other infos like id bulario
+    # simple_response = http_client.get(f"https://consultas.anvisa.gov.br/api/consulta/bulario/?filter[numeroRegistro]={medicine_register_number}")
+
+    medicine_name = medicine["produto"]["nome"]
+    pharmaceutical_company_name = medicine["empresa"]["razaoSocial"]
+    search_medicine_image_term = f"medicamento {medicine_name} {pharmaceutical_company_name}"
+    medicine_image = scraper.get_image(search_medicine_image_term, index)
+
+    driver.quit()
+
+    return OkResponse(content=DetailedMedicine(
+      ordem=medicine["ordem"],
+      imagem=medicine_image,
+      produto=medicine["produto"],
+      empresa=medicine["empresa"],
+      processo=medicine["processo"],
+    ),
+    pagination=None)
     
   except Exception as e:
-    return InternalServerErrorResponse(content={"error": f"{str(e)}"})
+    return InternalServerErrorResponse(content={"Error": f"{str(e)}"}, pagination=None)
 
 @get(path="/medicines/available/{medicine_name}/",
     description="Retrieve a list of available medicines that match the provided name or partial name.",
@@ -82,9 +95,9 @@ async def get_available_medicines_by_name(medicine_name: str):
     response = http_client.get(f"https://consultas.anvisa.gov.br/api/produto/listaMedicamentoBula/{medicine_name}")
     
     if not response:
-      return NoContentResponse(content=[])
+      return NoContentResponse(content=[], pagination=None)
     
     return OkResponse(content=response, pagination=None)
   
   except Exception as e:
-    return InternalServerErrorResponse(content={"error": f"{str(e)}"})
+    return InternalServerErrorResponse(content={"Error": f"{str(e)}"}, pagination=None)
