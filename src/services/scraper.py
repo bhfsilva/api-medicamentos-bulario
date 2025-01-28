@@ -4,7 +4,7 @@ class ScraperService():
   def __init__(self, webdriver):
     self._webdriver = webdriver
 
-  def get_image(self, search_term: str, index: str = "1") -> str:
+  def get_image(self, search_term: str, index: str) -> str:
     driver = self._webdriver
     base = ""
 
