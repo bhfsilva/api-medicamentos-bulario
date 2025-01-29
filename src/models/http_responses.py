@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from src.models.pagination import Pagination
-from typing import Any, Optional, List, Dict
+from typing import Optional, List, Dict
 from src.models.medicine import DetailedMedicine, Medicine
 
 class HttpResponse(BaseModel):
