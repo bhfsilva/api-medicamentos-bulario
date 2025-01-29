@@ -51,10 +51,9 @@ def get_medicines_usecase(search: str | None, page: int, size: int):
     return InternalServerErrorResponse(content={"Error": f"{str(e)}"}, pagination=None)
 
 def get_medicine_by_process_number_usecase(process_number: str, index: str):
-  driver = get_webdriver()
-  scraper = ScraperService(webdriver=driver)
-
   try:
+    driver = get_webdriver()
+    scraper = ScraperService(webdriver=driver)
     detailed_response = http_client.get(f"https://consultas.anvisa.gov.br/api/consulta/medicamento/produtos/?filter[numeroProcesso]={process_number}")
 
     if not detailed_response["content"]:
