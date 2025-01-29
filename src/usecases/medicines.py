@@ -2,7 +2,7 @@ from src.models.http_responses import *
 from src.models.pagination import Pagination
 from src.config.webdriver import get_webdriver
 from src.services.scraper import ScraperService
-from src.models.medicine import DetailedMedicine
+from src.models.medicines import DetailedMedicine
 from src.services.http_client import HttpService
 
 http_headers = {

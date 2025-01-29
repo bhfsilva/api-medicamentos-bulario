@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List, Dict
 from src.models.pagination import Pagination
-from src.models.medicine import DetailedMedicine, Medicine
+from src.models.medicines import DetailedMedicine, Medicine
 
 class HttpResponse(BaseModel):
   code: int

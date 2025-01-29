@@ -12,7 +12,9 @@ class ScraperService():
       driver.get(f"https://www.google.com/search?tbm=isch&q={search_term}")
 
       img = driver.find_element(By.XPATH, f"(//div[@style='position:relative']//img)[{index}]")
-      base = img.get_attribute("src").split(",")[1]
+
+      if img:
+        base = img.get_attribute("src").split(",")[1]
 
     except Exception as e:
       raise Exception(e)
