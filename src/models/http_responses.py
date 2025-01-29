@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from src.models.pagination import Pagination
 from typing import Optional, List, Dict
+from src.models.pagination import Pagination
 from src.models.medicine import DetailedMedicine, Medicine
 
 class HttpResponse(BaseModel):
@@ -24,3 +24,7 @@ class NoContentResponse(HttpResponse):
 class PartialContentResponse(HttpResponse):
   code: int = 206
   status: str = "Partial Content"
+
+class UnprocessableEntityResponse(HttpResponse):
+  code: int = 422
+  status: str = "Unprocessable Entity"

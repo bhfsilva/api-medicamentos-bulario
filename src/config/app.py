@@ -1,6 +1,7 @@
-from fastapi import FastAPI, status
-from fastapi.responses import RedirectResponse
-from src.models.http_responses import OkResponse, InternalServerErrorResponse, PartialContentResponse
+from src.models.http_responses import *
+from fastapi import FastAPI, status, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import RedirectResponse, JSONResponse
 
 responses_models = {
   status.HTTP_200_OK: {
@@ -16,7 +17,8 @@ responses_models = {
     "description": "Partial Content"
   },
   status.HTTP_422_UNPROCESSABLE_ENTITY: {
-    "model": None
+    "model": UnprocessableEntityResponse,
+    "description": "Unprocessable Entity"
   }
 }
 
@@ -34,6 +36,24 @@ app = FastAPI(
   redoc_url=None
 )
 
+# custom validation exception handler
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(_: Request, exc: RequestValidationError):
+  errors = exc.errors()
+  field_name = errors[0]['loc'][-1]
+  error_message = errors[0]['msg']
+
+  return JSONResponse(
+    status_code=422,
+    content={
+      "code": 422,
+      "status": "Unprocessable Entity",
+      "content": f"Field '{field_name}' {error_message.lower()}",
+      "pagination": None
+    }
+  )
+
+# redirect get request from root to /medicines
 @app.get("/", include_in_schema=False)
 def redirect_root():
   return RedirectResponse(url="/medicines/")

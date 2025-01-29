@@ -1,7 +1,8 @@
 from typing import Union
+from fastapi import Query
 from src.config.app import app, get
+from src.usecases.medicines import *
 from src.services.http_client import HttpService
-from src.usecases.medicines import get_available_medicine_by_name_usecase, get_medicines_usecase, get_medicine_by_process_number_usecase
 
 http_headers = {
   'Authorization': 'Guest',
@@ -17,8 +18,8 @@ http_client = HttpService(headers=http_headers)
     If a search query is provided, return a list of medicines that match the given name.
     """,
     swagger_url_id="getMedicines")
-async def get_medicines(search: Union[str, None] = None):
-  return get_medicines_usecase(search)
+async def get_medicines(search: Union[str, None] = None, page: int = Query(1, gt=0), size: int = Query(5, gt=0)):
+  return get_medicines_usecase(search, page, size)
 
 @get(path="/medicines/{process_number}/",
     description="""

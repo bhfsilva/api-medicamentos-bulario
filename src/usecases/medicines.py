@@ -24,13 +24,14 @@ def get_available_medicine_by_name_usecase(name: str):
   except Exception as e:
     return InternalServerErrorResponse(content={"Error": f"{str(e)}"}, pagination=None)
   
-def get_medicines_usecase(search: str | None):
+def get_medicines_usecase(search: str | None, page: int, size: int):
   endpoint = "https://consultas.anvisa.gov.br/api/consulta/bulario/?filter[nomeProduto]="
+  pagination_query = f"&page={page}&size={size}"
   try:
-    response = http_client.get(endpoint)
+    response = http_client.get(f"{endpoint}{pagination_query}")
 
     if search:
-      response = http_client.get(f"{endpoint}{search}")
+      response = http_client.get(f"{endpoint}{search}{pagination_query}")
 
     if not response["content"]:
       return NoContentResponse(content=[], pagination=None)
