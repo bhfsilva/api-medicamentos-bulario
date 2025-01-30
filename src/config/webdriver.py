@@ -19,6 +19,8 @@ def get_webdriver():
     
     chrome_options = Options() 
     chrome_options.add_argument('--headless=new')
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.binary_location = config.get(section, chrome_path_config)
     driver = webdriver.Chrome(
       service=Service(executable_path=config.get(section, chromedriver_path_config)),
