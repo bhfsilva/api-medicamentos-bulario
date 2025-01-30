@@ -65,10 +65,10 @@ class Enterprise(BaseModel):
 
 class DetailedMedicine(BaseModel):
   ordem: int
-  imagem: str
-  idBulaPacienteProtegido: str
-  idBulaProfissionalProtegido: str
-  produto: Product
-  empresa: Enterprise
+  imagemMedicamento: str
+  idBulaPaciente: str
+  idBulaProfissional: str
+  medicamento: Product
+  empresaFarmaceutica: Enterprise
   processo: Process
         

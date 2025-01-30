@@ -1,5 +1,9 @@
+from pathlib import Path
 from src.models.http_responses import *
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, status, Request
+from fastapi.templating import Jinja2Templates
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import RedirectResponse, JSONResponse
 
@@ -57,6 +61,19 @@ async def validation_exception_handler(_: Request, exc: RequestValidationError):
 @app.get("/", include_in_schema=False)
 def redirect_root():
   return RedirectResponse(url="/medicines/")
+
+app.mount("/src/static", StaticFiles(directory="src/static"), name="static")
+templates = Jinja2Templates(directory="src/static/visualizer")
+
+@app.get("/visualizer", include_in_schema=False)
+async def get_html():
+  html_file_path = Path("src/static/visualizer/index.html")
+
+  # Read the HTML file content
+  with open(html_file_path, "r") as file:
+    html_content = file.read()
+
+  return HTMLResponse(content=html_content)
 
 # custom get decorator
 def get(path: str, description: str, swagger_url_id: str):

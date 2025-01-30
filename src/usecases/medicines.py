@@ -81,11 +81,11 @@ def get_medicine_by_process_number_usecase(process_number: str, index: str):
 
     return OkResponse(content=DetailedMedicine(
       ordem=medicine["ordem"],
-      imagem=medicine_image,
-      idBulaPacienteProtegido=patient_leaflet_id,
-      idBulaProfissionalProtegido=professional_leaflet_id,
-      produto=medicine["produto"],
-      empresa=medicine["empresa"],
+      imagemMedicamento=medicine_image,
+      idBulaPaciente=patient_leaflet_id,
+      idBulaProfissional=professional_leaflet_id,
+      medicamento=medicine["produto"],
+      empresaFarmaceutica=medicine["empresa"],
       processo=medicine["processo"],
     ),
     pagination=None)
