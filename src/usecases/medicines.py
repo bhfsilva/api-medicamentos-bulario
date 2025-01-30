@@ -42,7 +42,7 @@ def get_medicines_usecase(search: str | None, page: int, size: int):
         totalElements=response["totalElements"],
         totalPages=response["totalPages"],
         last=response["last"],
-        number=response["number"],
+        number=(response["number"]+1),
         first=response["first"]
       )
     )

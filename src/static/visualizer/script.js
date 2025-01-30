@@ -5,12 +5,16 @@ window.onload = function(){
   const responseContentJSONBox = document.getElementById("responseJSON");
   const responseContentHTMLBox = document.getElementById("responseHTML");
   const HTMLViewOptionButton = document.getElementById("htmlViewOption");
-  const JSONViewOptionButton = document.getElementById("jsonViewoption");
+  const JSONViewOptionButton = document.getElementById("jsonViewOption");
   const textInput = document.getElementById("textInput");
   const responseStatusBox = document.getElementById("responseStatus");
   const nomeMedicamentoRadioButton = document.getElementById("nomeMedicamentoOption");
   const numeroProcessoRadioButton = document.getElementById("numeroProcessoOption");
   const dropdownMenuOptions = document.getElementById("dropdownMenu");
+  const nextPageButton = document.getElementById("nextPageButton");
+  const previousPageButton = document.getElementById("previousPageButton")
+  const pageNumberDisplay = document.getElementById("pageNumberDisplay");
+  let pageNumber = 1
 
   // query for medicine name on input typing
   textInput.addEventListener('input', async function() {
@@ -101,11 +105,12 @@ window.onload = function(){
     responseStatusBox.innerHTML = "Response status:";
     loadingGif.style.display = "unset";
 
-    let query = "";
+    let params = { page: pageNumber }
+    let query = `/?${new URLSearchParams(params).toString()}`;
 
-    if (textInput.value != "") { 
+    if (textInput.value != "") {
       if (nomeMedicamentoRadioButton.checked) {
-        query = `/?search=${textInput.value}`;
+        query = `/?search=${textInput.value}&${query}`;
       } else if (numeroProcessoRadioButton.checked) {
         query = `/${textInput.value}/`;
       }
@@ -123,8 +128,6 @@ window.onload = function(){
     }
   }
 
-  getData();
-
   // prevent default form event
   textInput.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
@@ -133,10 +136,23 @@ window.onload = function(){
     }
   });
 
-  searchButton.onclick = function() {
+  // set buttons onclick functions
+  function changePage(pageNumber) {
+    pageNumberDisplay.innerText = `Página ${pageNumber}`;
     getData();
   }
   
+  previousPageButton.onclick = function() {
+    changePage(-1)
+  };
+  nextPageButton.onclick = function() {
+    changePage(+1)
+  };
+  
+  searchButton.onclick = function() {
+    getData();
+  }
+
   // switch view options
   HTMLViewOptionButton.onclick = function() {
     responseContentJSONBox.style.display = "none";
@@ -151,4 +167,6 @@ window.onload = function(){
     responseContentHTMLBox.style.display = "none";
     HTMLViewOptionButton.disabled = false;
   }
+
+  getData();
 };

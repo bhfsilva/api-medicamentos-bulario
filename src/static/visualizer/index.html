@@ -37,11 +37,22 @@
 					<img id="loadingGif" height="40" src="/src/static/visualizer/loading.gif" alt="loading gif"/>
 				</div>
 				<div style="font-size: medium;border: 1px solid #595959;overflow: scroll;width: 800px;height: 500px;padding: 20px;border-radius: 2px;">
-					<button class="rounded-1 border" id="jsonViewoption" disabled>JSON</button>
+					<button class="rounded-1 border" id="jsonViewOption" disabled>JSON</button>
 					<button class="rounded-1 border" id="htmlViewOption" style="display: none;">HTML</button>
 					<div style="margin-top: 10px;">
 						<div id="responseHTML" style="display: none;"></div>
 						<pre id="responseJSON" style="overflow: unset;"></pre>
+					</div>
+				</div>
+				<div style="margin-top: 10px;display: flex;justify-content: space-between;align-items: center;">
+					<p style="margin: 0;" id="pageNumberDisplay">Página 1</p>
+					<div>
+						<button class="rounded-1 border" id="previousPageButton">
+							< Página anterior
+						</button>
+						<button class="rounded-1 border" id="nextPageButton">
+							Próxima página >
+						</button>
 					</div>
 				</div>
 			</div>
