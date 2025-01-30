@@ -2,72 +2,72 @@ from pydantic import BaseModel
 from typing import Optional
 
 class Medicine(BaseModel):
-  idProduto: int
-  numeroRegistro: str
-  nomeProduto: str
-  expediente: str
-  razaoSocial: str
-  cnpj: str
-  numeroTransacao: str
-  data: str
-  numProcesso: str
-  idBulaPacienteProtegido: str
-  idBulaProfissionalProtegido: str
-  dataAtualizacao: str
+  idProduto: Optional[int]
+  numeroRegistro: Optional[str]
+  nomeProduto: Optional[str]
+  expediente: Optional[str]
+  razaoSocial: Optional[str]
+  cnpj: Optional[str]
+  numeroTransacao: Optional[str]
+  data: Optional[str]
+  numProcesso: Optional[str]
+  idBulaPacienteProtegido: Optional[str]
+  idBulaProfissionalProtegido: Optional[str]
+  dataAtualizacao: Optional[str]
 
 class Process(BaseModel):
-  numero: str
-  situacao: int
-  numeroProcessoFormatado: str
+  numero: Optional[str]
+  situacao: Optional[int]
+  numeroProcessoFormatado: Optional[str]
 
 class Type(BaseModel):
-  codigo: int
+  codigo: Optional[int]
   descricao: Optional[str]
 
 class RegulatoryCategory(BaseModel):
-  codigo: int
-  descricao: str
+  codigo: Optional[int]
+  descricao: Optional[str]
 
 class Product(BaseModel):  
-  codigo: int
-  nome: str
-  numeroRegistro: str
+  codigo: Optional[int]
+  nome: Optional[str]
+  numeroRegistro: Optional[str]
   tipo: Type
   categoria: Optional[str]
   situacaoRotulo: Optional[str]
   dataVencimento: Optional[str]
-  mesAnoVencimento: str
-  dataVencimentoRegistro: str
-  principioAtivo: str
-  situacaoApresentacao: str
-  dataRegistro: str
+  mesAnoVencimento: Optional[str]
+  dataVencimentoRegistro: Optional[str]
+  principioAtivo: Optional[str]
+  situacaoApresentacao: Optional[str]
+  dataRegistro: Optional[str]
   categoriaRegulatoria: RegulatoryCategory
-  medicamentoReferencia: str
+  medicamentoReferencia: Optional[str]
   categoriaProduto: Optional[str]
   complemento: Optional[str]
-  tipoAutorizacao: str
+  tipoAutorizacao: Optional[str]
   tipoPriorizacao: Optional[str]
   descricaoMedicamentoNotificado: Optional[str]
-  categoriaMedicamentoNotificado: str
-  codigoNotificacao: int
-  sinonimos: str
-  indicacoes: str
+  categoriaMedicamentoNotificado: Optional[str]
+  codigoNotificacao: Optional[int]
+  sinonimos: Optional[str]
+  indicacoes: Optional[str]
   dataCancelamento: Optional[str]
-  numeroRegistroFormatado: str
-  mesAnoVencimentoFormatado: str
-  acancelar: bool
+  numeroRegistroFormatado: Optional[str]
+  mesAnoVencimentoFormatado: Optional[str]
+  acancelar: Optional[bool]
   
 class Enterprise(BaseModel):
-  cnpj: str
-  razaoSocial: str
-  numeroAutorizacao: str
-  cnpjFormatado: str
+  cnpj: Optional[str]
+  razaoSocial: Optional[str]
+  numeroAutorizacao: Optional[str]
+  cnpjFormatado: Optional[str]
 
 class DetailedMedicine(BaseModel):
-  ordem: int
-  imagemMedicamento: str
-  idBulaPaciente: str
-  idBulaProfissional: str
+  ordem: Optional[int]
+  imagemMedicamento: Optional[str]
+  idBulaPaciente: Optional[str]
+  idBulaProfissional: Optional[str]
   medicamento: Product
   empresaFarmaceutica: Enterprise
   processo: Process
