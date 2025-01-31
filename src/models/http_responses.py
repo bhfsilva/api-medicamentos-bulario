@@ -21,10 +21,6 @@ class NoContentResponse(HttpResponse):
   code: int = 204
   status: str = "No Content"
 
-class PartialContentResponse(HttpResponse):
-  code: int = 206
-  status: str = "Partial Content"
-
 class UnprocessableEntityResponse(HttpResponse):
   code: int = 422
   status: str = "Unprocessable Entity"
