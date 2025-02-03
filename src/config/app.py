@@ -16,10 +16,6 @@ responses_models = {
     "model": InternalServerErrorResponse,
     "description": "Internal Server Error"
   },
-  status.HTTP_206_PARTIAL_CONTENT: {
-    "model": PartialContentResponse,
-    "description": "Partial Content"
-  },
   status.HTTP_422_UNPROCESSABLE_ENTITY: {
     "model": UnprocessableEntityResponse,
     "description": "Unprocessable Entity"

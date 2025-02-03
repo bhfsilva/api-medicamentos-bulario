@@ -5,9 +5,270 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<title>API Medicamentos</title>
-		<script src="/src/static/visualizer/script.js"></script>
+		<script>
+			const HOST_URL = window.location.origin;
+			const ROOT_URL = `${HOST_URL}/medicines`;
+			let PAGE_NUMBER = 1;
+
+			Element.prototype.appendInnerHTML = function(HTMLString) {
+				return this.innerHTML += HTMLString;
+			};
+
+			Element.prototype.setInnerHTML = function(HTMLString) {
+				return this.innerHTML = HTMLString;
+			};
+
+			Element.prototype.appendClass = function(className) {
+				this.classList.add(className);
+			};
+
+			Element.prototype.removeClass = function(className) {
+				this.classList.remove(className);
+			};
+
+			Element.prototype.getChildrenNodesByTagName = function(tagname) {
+				return this.querySelectorAll(tagname);
+			}
+
+			Element.prototype.hide = function() {
+				this.style.display = "none";
+			}
+
+			Element.prototype.show = function() {
+				this.style.display = "unset";
+			}
+
+			const DOM = {
+				getByID(id) {
+					return document.getElementById(id);
+				}
+			}
+
+			window.onload = async function() {
+				const TEXT_INPUT = DOM.getByID("textInput");
+				const DROPDOWN_MENU = DOM.getByID("dropdownMenu");
+				const BY_MEDICINE_NAME_RADIO_BUTTON = DOM.getByID("nomeMedicamentoOption");
+				const BY_PROCESS_NUMBER_RADIO_BUTTON = DOM.getByID("numeroProcessoOption");
+				const SEARCH_BUTTON = DOM.getByID("searchButton");
+				const LOADING_GIF = DOM.getByID("loadingGif");
+				const SELECT_JSON_DISPLAY_BUTTON = DOM.getByID("jsonViewOption");
+				const SELECT_HTML_DISPLAY_BUTTON = DOM.getByID("htmlViewOption");
+				const JSON_DISPLAY = DOM.getByID("responseJSON");
+				const HTML_DISPLAY = DOM.getByID("responseHTML");
+				const NEXT_PAGE_BUTTON = DOM.getByID("nextPageButton");
+				const PREVIOUS_PAGE_BUTTON = DOM.getByID("previousPageButton");
+				const PAGE_NUMBER_DISPLAY = DOM.getByID("pageNumberDisplay");
+
+				PAGE_NUMBER_DISPLAY.setPage = function(pageNumber) { this.innerText = `Página ${pageNumber}` }
+				TEXT_INPUT.isNotBlank = function() { return this.value.trim() !== ""; }
+				DROPDOWN_MENU.hide = function() { this.removeClass("show"); }
+				DROPDOWN_MENU.show = function() { this.appendClass("show"); }
+
+				async function httpGET(url) {
+					const response = await fetch(url, { method: "GET" });
+					const data = await response.json();
+					return {
+						"code": data.code,
+						"status": data.status,
+						"content": data.content,
+						"pagination": { ...data.pagination },
+						isOk: function() {
+							return this.code === 200;
+						}
+					}
+				}
+				
+				function renderResponseStatus(code) {
+					const responseStatusDisplay = DOM.getByID("responseStatusDisplay");
+					const status = {
+						200: { message: "OK", color: "#00b506" },
+						500: { message: "Internal Server Error", color: "#b50000" },
+						204: { message: "No Content", color: "#d7de02" },
+						422: { message: "Unprocessable Entity", color: "#b50000" }
+					}
+
+					const displayContent = `HTTP ${code} - ${(status[code]?.message)}`;
+					responseStatusDisplay.style.color = status[code]?.color;
+					responseStatusDisplay.textContent = status[code]?.message ? displayContent : "";
+
+					return {
+						reset: function() {
+							responseStatusDisplay.style.color = "";
+							responseStatusDisplay.textContent = "";
+						}
+					}
+				}
+
+				async function getAvailableMedicines(prefix) {
+					return await httpGET(`${ROOT_URL}/available/${prefix}/`);
+				}
+
+				async function getMedicines(medicineName, pageNumber = PAGE_NUMBER) {
+					renderResponseStatus().reset();
+					LOADING_GIF.show();
+					const rootURLObject = new URL(`${ROOT_URL}`);
+					rootURLObject.searchParams.set("page", pageNumber);
+
+					if (medicineName != "")
+						rootURLObject.searchParams.set("search", medicineName);
+
+					const response = await httpGET(rootURLObject.href);
+					renderResponseStatus(response.code);
+					LOADING_GIF.hide();
+					return response
+				}
+
+				async function getMedicinesByProcessNumber(processNumber) {
+					renderResponseStatus().reset();
+					LOADING_GIF.show();
+					const response = await httpGET(`${ROOT_URL}/${processNumber}/`);
+					renderResponseStatus(response.code);
+					LOADING_GIF.hide();
+					return response
+				}
+
+				SELECT_JSON_DISPLAY_BUTTON.onclick = function() {
+					HTML_DISPLAY.hide();
+					SELECT_HTML_DISPLAY_BUTTON.disabled = false;
+					this.disabled = true;
+					JSON_DISPLAY.show();
+				}
+
+				SELECT_HTML_DISPLAY_BUTTON.onclick = function() {
+					JSON_DISPLAY.hide();
+					SELECT_JSON_DISPLAY_BUTTON.disabled = false;
+					this.disabled = true;
+					HTML_DISPLAY.show();
+				}
+
+				HTML_DISPLAY.renderDetailedMedicine = function(object) {
+					SELECT_HTML_DISPLAY_BUTTON.show();
+					const medicine = object["content"];
+					this.setInnerHTML(`
+						<div class="d-flex gap-3 justify-content-between align-items-center">
+							<img width="250" heigth="220" src="data:image/png;base64,${medicine["imagemMedicamento"]}" alt="medicamento ${medicine["nomeMedicamento"]}"/>
+							<div>
+								<b>ID medicamento: </b><span>${medicine["medicamento"]["codigo"]}</span><br>
+								<b>Número processo: </b><span>${medicine["processo"]["numero"]}</span><br>
+								<b>Nome medicamento: </b><span>${medicine["medicamento"]["nome"]}</span><br>
+								<b>Número registro: </b><span><a>${medicine["medicamento"]["numeroRegistro"]}</a></span><br>
+								<b>Data registro: </b><span><a>${medicine["medicamento"]["dataRegistro"]}</a></span><br>
+								<b>Data vencimento registro: </b><span><a>${medicine["medicamento"]["dataVencimentoRegistro"]}</a></span><br>
+								<b>Princípio ativo: </b><span><a>${medicine["medicamento"]["principioAtivo"]}</a></span><br>
+								<b>Nome Empresa farmacêutica: </b><span><a>${medicine["empresaFarmaceutica"]["razaoSocial"]}</a></span><br>
+								<b>CNPJ empresa farmacêutica: </b><span><a>${medicine["empresaFarmaceutica"]["cnpj"]}</a></span><br>
+								<a href="https://consultas.anvisa.gov.br/api/consulta/medicamentos/arquivo/bula/parecer/${medicine["idBulaPaciente"]}/?Authorization=Guest" download>
+									<img src="https://consultas.anvisa.gov.br/assets/img/pdf.png"/>  
+									Download bula
+								</a>
+							</div>
+						</div>
+					`);
+				}
+
+				JSON_DISPLAY.render = function(content) {
+					SELECT_JSON_DISPLAY_BUTTON.show();
+					this.innerText = JSON.stringify(content, undefined, 2);
+				}
+				
+				function selectDropdownItem(event) {
+					event.preventDefault();
+					TEXT_INPUT.value = event.target.innerText;
+					DROPDOWN_MENU.hide();
+				}
+
+				DROPDOWN_MENU.renderDropdownItems = function(stringsList) {
+					this.setInnerHTML("");
+					stringsList.forEach((entry) => {
+						this.appendInnerHTML(`<li><button class="dropdown-item">${entry}</button></li>`);
+					})
+					this.show();
+					this.getChildrenNodesByTagName("button").forEach((children) => {
+						children.addEventListener("click", selectDropdownItem)
+					})
+				}
+
+				TEXT_INPUT.addEventListener("input", async function() {
+					if (TEXT_INPUT.isNotBlank() && BY_MEDICINE_NAME_RADIO_BUTTON.checked) {
+						const response = await getAvailableMedicines(TEXT_INPUT.value);
+						console.log(response);
+						if (response.isOk() && response.content.length != 0) {
+							DROPDOWN_MENU.renderDropdownItems(response.content);
+						}
+					}
+				})
+
+				function selectJsonDisplayOnly() {
+					SELECT_JSON_DISPLAY_BUTTON.onclick();
+					SELECT_HTML_DISPLAY_BUTTON.hide();
+				}
+
+				NEXT_PAGE_BUTTON.onclick = async function() {
+					PAGE_NUMBER ++;
+					await fetchData();
+					PAGE_NUMBER_DISPLAY.setPage(PAGE_NUMBER);
+				}
+
+				PREVIOUS_PAGE_BUTTON.onclick = async function() {
+					PAGE_NUMBER --;
+					await fetchData();
+					PAGE_NUMBER_DISPLAY.setPage(PAGE_NUMBER);
+				}
+
+				async function fetchData() {
+					if (BY_MEDICINE_NAME_RADIO_BUTTON.checked) {
+						const response = await getMedicines(TEXT_INPUT.value);
+						selectJsonDisplayOnly();
+						JSON_DISPLAY.render(response);
+
+						NEXT_PAGE_BUTTON.disabled = false;
+						PREVIOUS_PAGE_BUTTON.disabled = false;
+
+						const currentPage = response.pagination.number;
+						if (currentPage <= 1)
+							PREVIOUS_PAGE_BUTTON.disabled = true;
+
+						if (response.pagination.last)
+							NEXT_PAGE_BUTTON.disabled = true;
+					}
+
+					if (BY_PROCESS_NUMBER_RADIO_BUTTON.checked) {
+
+						if (!TEXT_INPUT.isNotBlank()) {
+							alert("Insira o número de processo de um medicamento")
+							return
+						}
+
+						const response = await getMedicinesByProcessNumber(TEXT_INPUT.value);
+						HTML_DISPLAY.renderDetailedMedicine(response);
+						JSON_DISPLAY.render(response);
+						NEXT_PAGE_BUTTON.disabled = true;
+						PREVIOUS_PAGE_BUTTON.disabled = true;
+						PAGE_NUMBER_DISPLAY.setPage(0);
+					}
+				}
+
+				SEARCH_BUTTON.onclick = fetchData;
+				await fetchData();
+			};
+		</script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+		<style>
+			#loadingGif {
+				width: 40px; height: 40px;
+				display: grid;
+				border-radius: 50%;
+				background: conic-gradient(#0000 10%, #000);
+				mask: radial-gradient(farthest-side, #0000 calc(100% - 5px), #000 0);
+				-webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 5px), #000 0);
+				animation: spin 1s linear infinite;
+			}
+
+			@keyframes spin {
+				100% { transform: rotate(1turn); }
+			}
+		</style>
 	</head>
 	<body>
 		<main class="d-flex flex-column justify-content-center align-items-center">
@@ -16,7 +277,7 @@
 				<div class="d-flex gap-2 justify-content-evenly align-items-center position-relative">
 					<input class="z-2 rounded-1 w-100 p-1 border border-secondary" type="text" id="textInput" placeholder="Consulte medicamentos">
 					<div class="mt-3 position-absolute top-2 start-0 dropdown z-1">
-						<ul class="dropdown-menu" id="dropdownMenu"></ul>
+						<ul class="dropdown-menu" id="dropdownMenu" style="margin-top: 3px;"></ul>
 					</div>
 					<input class="rounded-1 border border-secondary" type="button" id="searchButton" value="consultar">
 				</div>
@@ -33,8 +294,8 @@
 			</form>
 			<div>
 				<div class="mb-2 d-flex flex-row justify-content-between align-items-center container-sm">
-					<p style="margin-top: revert;" id="responseStatus">Response status:</p>	
-					<img id="loadingGif" height="40" src="/src/static/visualizer/loading.gif" alt="loading gif"/>
+					<p style="margin-top: revert;">Status Resposta: <b id="responseStatusDisplay"></b></p>	
+					<svg id="loadingGif"></svg>
 				</div>
 				<div style="font-size: medium;border: 1px solid #595959;overflow: scroll;width: 800px;height: 500px;padding: 20px;border-radius: 2px;">
 					<button class="rounded-1 border" id="jsonViewOption" disabled>JSON</button>
@@ -47,10 +308,10 @@
 				<div style="margin-top: 10px;display: flex;justify-content: space-between;align-items: center;">
 					<p style="margin: 0;" id="pageNumberDisplay">Página 1</p>
 					<div>
-						<button class="rounded-1 border" id="previousPageButton">
+						<button class="rounded-1 border" id="previousPageButton" disabled>
 							< Página anterior
 						</button>
-						<button class="rounded-1 border" id="nextPageButton">
+						<button class="rounded-1 border" id="nextPageButton" disabled>
 							Próxima página >
 						</button>
 					</div>
