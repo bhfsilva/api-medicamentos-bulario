@@ -23,6 +23,11 @@
 > [!IMPORTANT]
 > A extração das imagens é feita utilizando Selenium, capturando o base 64 das imagems retornadas em uma busca no Google Imagens. Por essa razão, podem haver diferenças entre o medicamento consultado e a imagem retornada.
 
+- Para executar a aplicação garanta que o docker-compose esteja instalado na máquina:
+```bash
+$ docker compose up -d
+```
+
 ## Endpoints
 ### GET /docs
 Acessa página com documentação gerada pelo Swagger.
