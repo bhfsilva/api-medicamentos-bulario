@@ -1,0 +1,7 @@
+services:
+  api-medicamentos-bulario:
+    image: bhfsilva/api-medicamentos-bulario
+    build: .
+    container_name: api-medicamentos-bulario
+    ports:
+      - 8000:8000

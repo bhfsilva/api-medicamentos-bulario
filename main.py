@@ -2,15 +2,6 @@ from typing import Union
 from fastapi import Query
 from src.config.app import app, get
 from src.usecases.medicines import *
-from src.services.http_client import HttpService
-
-http_headers = {
-  'Authorization': 'Guest',
-  'Accept': 'application/json, text/plain, */*',
-  'Referer': 'https://consultas.anvisa.gov.br'
-}
-
-http_client = HttpService(headers=http_headers)
 
 @get(path="/medicines/",
     description="""
