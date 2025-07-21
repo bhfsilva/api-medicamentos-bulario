@@ -1,3 +1,7 @@
+# 📥 Projeto arquivado
+Esse repositório foi arquivado e não será mais mantido, permanecendo disponível apenas para referência.<br>
+O arquivamento aconteceu pois a API da ANVISA consumida passou a exigir autenticação para acesso, o que inviabiliza a continuidade da proposta original do repositório, que era oferecer acesso aberto e automatizado às informações.
+
 # API Medicamentos Bulário
 
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
@@ -21,7 +25,7 @@
 * <strong>Tecnologias usadas no visualizador</strong>: `🟪 Bootstrap`, `🟨 JavaScript`.
 
 > [!IMPORTANT]
-> A extração das imagens é feita utilizando Selenium, capturando o base 64 das imagems retornadas em uma busca no Google Imagens. Por essa razão, podem haver diferenças entre o medicamento consultado e a imagem retornada.
+> A extração das imagens é feita utilizando Selenium, capturando o base 64 das imagens retornadas em uma busca no Google Imagens. Por essa razão, podem haver diferenças entre o medicamento consultado e a imagem retornada.
 
 - Para executar a aplicação garanta que o docker-compose esteja instalado na máquina:
 ```bash
@@ -29,26 +33,26 @@ $ docker compose up -d
 ```
 
 ## Endpoints
-### GET /docs
+### GET `/docs`
 Acessa página com documentação gerada pelo Swagger.
-### GET /visualizer
+### GET `/visualizer`
 Acessa cliente para consulta das informações e visualização das imagens dos medicamentos.
-### GET /medicines
+### GET `/medicines`
 Retorna página contendo lista de medicamentos simples em ordem alfabética.
-### GET /medicines/available/{nome do medicamento}
+### GET `/medicines/available/{nome do medicamento}`
 Retorna lista de strings contendo o nome dos medicamentos disponíveis para consulta.
-### GET /medicines/{número do processo do medicamento}
+### GET `/medicines/{número do processo do medicamento}`
 Retorna medicamento completo incluindo sua imagem no formato base 64.
 ## Query Params
-### GET /medicines/{número do processo do medicamento}/?index={index da imagem}
+### GET `/medicines/{número do processo do medicamento}/?index={index da imagem}`
 Altera a imagem retornada baseando-se na posição da imagem no Google Imagens (por padrão a primeira imagem é retornada).
 > [!TIP]
 > O termo buscado no Google Imagens para captura da imagem é: <b>"medicamento" + {nome do medicamento} + {razão social da empresa farmacêutica}<b>
-### GET /medicines/?search={nome do medicamento}
+### GET `/medicines/?search={nome do medicamento}`
 Retorna página contendo lista de medicamentos simples com o mesmo nome porém de diferentes empresas farmacêuticas.
-### GET /medicines/?size={quantidade de medicamentos}
+### GET `/medicines/?size={quantidade de medicamentos}`
 Limita quantidade de medicamentos retornados (por padrão 5 medicamentos são retornados).
-### GET /medicines/?page={quantidade de medicamentos}
+### GET `/medicines/?page={quantidade de medicamentos}`
 Consulta nova página de medicamentos.
 
 ## Modelos
